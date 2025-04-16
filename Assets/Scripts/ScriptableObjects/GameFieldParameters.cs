@@ -26,11 +26,6 @@ public class GameFieldParameters : ScriptableObject
         float width = Camera.main.aspect * height;
         float freeHeight = height - topOffset - minBottomOffset, freeWidth = width - minRightOffset - minLeftOffset;
 
-        center = new Vector3(
-            minLeftOffset + (freeWidth - width) * 0.5f,
-            minBottomOffset + (freeHeight - height) * 0.5f
-            );
-
         if (freeHeight * aspectValue > freeWidth)
         {
             size = new Vector3(freeWidth, freeWidth / aspectValue);
@@ -39,5 +34,10 @@ public class GameFieldParameters : ScriptableObject
         {
             size = new Vector3(freeHeight * aspectValue, freeHeight);
         }
+
+        center = new Vector3(
+            minLeftOffset + (freeWidth - width) * 0.5f,
+            (height - size.y) * 0.5f - topOffset
+        );
     }
 }

@@ -1,12 +1,13 @@
+using System;
+using System.Drawing;
 using UnityEngine;
 
 public class GameFieldScaler : MonoBehaviour
 {
     [SerializeField] private GameFieldParameters fieldParameters;
+    private IBoundsProvider boundsProvider;
 
-    private float aspectValue;
-
-    private void Start()
+    private void Awake()
     {
         RescaleGameField();
     }
@@ -23,7 +24,12 @@ public class GameFieldScaler : MonoBehaviour
 
     private void RescaleGameField()
     {
-        fieldParameters.GetCenterAndSize(out Vector3 center, out Vector3 size);
+        if (boundsProvider == null)
+        {
+            boundsProvider = GetComponent<IBoundsProvider>();
+        }
+
+        fieldParameters.GetCenterAndSize(boundsProvider.GetBounds(), out Vector3 center, out Vector3 size);
         transform.position = center;
         transform.localScale = size;
     }

@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 043670fa1f8b65e428a71dc3e2f5954c, type: 3}
-  m_Name: GameFieldSize
+  m_Script: {fileID: 11500000, guid: 372da2b69fb8f5345ac754345c0aeabe, type: 3}
+  m_Name: PhysicsParameters
   m_EditorClassIdentifier: 
-  aspect: {x: 2, y: 2}
-  topOffset: 1
-  minBottomOffset: 1
-  minRightOffset: 1
-  minLeftOffset: 1
+  gravity: 0.5
+  correctionPercent: 0.8
+  allowedPenetration: 0.01
+  minDeltaVelocity: 0.03
+  restitution: 0.3

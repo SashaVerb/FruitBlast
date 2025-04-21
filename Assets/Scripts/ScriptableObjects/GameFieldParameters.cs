@@ -20,10 +20,10 @@ public class GameFieldParameters : ScriptableObject
         aspectValue = (float)aspect.x / aspect.y;
     }
 
-    public void GetCenterAndSize(out Vector3 center, out Vector3 size)
+    public void GetCenterAndSize(Bounds bounds, out Vector3 center, out Vector3 size)
     {
-        float height = Camera.main.orthographicSize * 2f;
-        float width = Camera.main.aspect * height;
+        float height = bounds.size.y;
+        float width = bounds.size.x;
         float freeHeight = height - topOffset - minBottomOffset, freeWidth = width - minRightOffset - minLeftOffset;
 
         if (freeHeight * aspectValue > freeWidth)

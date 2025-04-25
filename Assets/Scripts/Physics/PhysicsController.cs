@@ -3,18 +3,15 @@ using UnityEngine;
 
 public class PhysicsController : MonoBehaviour
 {
-    [SerializeField] private Transform physicBodyParent;
     [SerializeField] private PhysicsParameters parameters;
-    [SerializeField] private PhysicCircle physicCirclePrefab;
 
-    private List<PhysicCircle> bodies;
-    private List<PhysicLine> borders;
+    private static List<PhysicCircle> bodies = new();
+    private static List<PhysicLine> borders;
 
-    private readonly List<CollisionInfo> collisionInfos = new();
+    private static List<CollisionInfo> collisionInfos = new();
 
     private void Awake()
     {
-        bodies = new(physicBodyParent.GetComponentsInChildren<PhysicCircle>());
         InitBorders();
     }
 
@@ -27,7 +24,7 @@ public class PhysicsController : MonoBehaviour
     {
         for (int i = 0; i < bodies.Count; i++)
         {
-            bodies[i].AddImpulse(Vector2.down * parameters.gravity * Time.fixedDeltaTime);
+            bodies[i].AddVelocity(Vector2.down * parameters.gravity * Time.fixedDeltaTime);
 
             DetectBoundaryCollisions(bodies[i]);
 
@@ -57,14 +54,21 @@ public class PhysicsController : MonoBehaviour
     {
         Vector2 positionA = bodyA.transform.position;
         Vector2 positionB = bodyB.transform.position;
-        float distance = Vector2.Distance(positionA, positionB);
-        float penetration = (bodyA.Radius + bodyB.Radius) - distance;
+        float radiusesLength = bodyA.Radius + bodyB.Radius;
 
-        if (penetration > 0f)
+        if (SquareDistance(positionA, positionB) < radiusesLength * radiusesLength)
         {
+            float penetration = radiusesLength - Vector2.Distance(positionA, positionB);
             Vector2 normal = (positionB - positionA).normalized;
             collisionInfos.Add(new CollisionInfo(bodyA, bodyB, penetration, normal));
         }
+    }
+
+    private static float SquareDistance(Vector2 positionA, Vector2 positionB)
+    {
+        float deltaX = positionA.x - positionB.x, deltaY = positionA.y - positionB.y;
+
+        return (deltaX * deltaX + deltaY * deltaY);
     }
 
     private void ResolveCollisions()
@@ -97,7 +101,7 @@ public class PhysicsController : MonoBehaviour
         Vector2 deltaVelocity = bodyA.Velocity - bodyB.Velocity;
         float speedOnNormal = Vector2.Dot(normal, deltaVelocity);
 
-        if (speedOnNormal < 0)
+        if (speedOnNormal <= 0)
             return;
 
         float impulseMagnitude = (1 + parameters.restitution) * speedOnNormal / (bodyA.InverseMass + bodyB.InverseMass);
@@ -105,21 +109,30 @@ public class PhysicsController : MonoBehaviour
         if (speedOnNormal < parameters.minDeltaVelocity)
         {
             float bVelocityAlongNormal = -Vector2.Dot(bodyB.Velocity, normal);
-
-            bodyA.AddImpulse(-normal * (speedOnNormal - bVelocityAlongNormal));
-            bodyB.AddImpulse(normal * bVelocityAlongNormal);
+            float aVelocityAlongNormal = Vector2.Dot(bodyA.Velocity, normal);
+            if (aVelocityAlongNormal < 0)
+            {
+                bodyB.AddVelocity(normal * (aVelocityAlongNormal + bVelocityAlongNormal));
+            }
+            else if (bVelocityAlongNormal < 0)
+            {
+                bodyA.AddVelocity(-normal * (aVelocityAlongNormal + bVelocityAlongNormal));
+            }
+            else
+            {
+                bodyA.AddVelocity(-normal * (speedOnNormal - bVelocityAlongNormal));
+                bodyB.AddVelocity(normal * bVelocityAlongNormal);
+            }
         }
         else
         {
-            bodyA.AddImpulse(-normal * impulseMagnitude * bodyA.InverseMass);
-            bodyB.AddImpulse(normal * impulseMagnitude * bodyB.InverseMass);
+            bodyA.AddVelocity(-normal * impulseMagnitude * bodyA.InverseMass);
+            bodyB.AddVelocity(normal * impulseMagnitude * bodyB.InverseMass);
         }
     }
 
-    public void AddPhysicCircle()
+    public void AddPhysicBody(PhysicCircle newBody)
     {
-        var newBody = Instantiate(physicCirclePrefab, Vector3.up * 10f, Quaternion.identity, physicBodyParent);
-        newBody.Radius = Random.Range(0.5f, 1.5f);
         bodies.Add(newBody);
     }
 
@@ -135,13 +148,49 @@ public class PhysicsController : MonoBehaviour
         }
     }
 
-    public void DestroyBodies()
+    public void DestroyAllBodies()
     {
         foreach(var body in bodies)
         {
             Destroy(body.gameObject);
         }
         bodies.Clear();
+    }
+
+    public static void RemoveBody(PhysicCircle body)
+    {
+        bodies.Remove(body);
+    }
+
+    public static PhysicCircle GetBodyAt(Vector2 position)
+    {
+        foreach (var body in bodies)
+        {
+            if (SquareDistance(position, body.transform.position) < body.Radius * body.Radius)
+            {
+                return body;
+            }
+        }
+        return null;
+    }
+
+    public static List<PhysicCircle> GetBodiesInArea(Vector2 position, float radius)
+    {
+        List<PhysicCircle> result = new();
+        float radiusesSquare;
+
+        foreach (var body in bodies)
+        {
+            radiusesSquare = radius + body.Radius;
+            radiusesSquare *= radiusesSquare;
+
+            if (SquareDistance(position, body.transform.position) < radiusesSquare)
+            {
+                result.Add(body);
+            }
+        }
+
+        return result;
     }
 
     private class CollisionInfo

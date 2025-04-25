@@ -1,11 +1,10 @@
-using System;
-using System.Drawing;
 using UnityEngine;
 
 public class GameFieldScaler : MonoBehaviour
 {
     [SerializeField] private GameFieldParameters fieldParameters;
-    private IBoundsProvider boundsProvider;
+    [SerializeField] private CameraToBorder boundsProvider;
+    [SerializeField] private CircleScaler circleScaler;
 
     private void Awake()
     {
@@ -24,13 +23,10 @@ public class GameFieldScaler : MonoBehaviour
 
     private void RescaleGameField()
     {
-        if (boundsProvider == null)
-        {
-            boundsProvider = GetComponent<IBoundsProvider>();
-        }
-
         fieldParameters.GetCenterAndSize(boundsProvider.GetBounds(), out Vector3 center, out Vector3 size);
         transform.position = center;
         transform.localScale = size;
+
+        circleScaler.RescaleAllCircles(Mathf.Min(size.x, size.y));
     }
 }

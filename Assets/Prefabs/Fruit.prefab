@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1840784330794821403}
   - component: {fileID: 1263468098673139692}
   - component: {fileID: 6990707839996023097}
+  - component: {fileID: 39860306742704813}
   - component: {fileID: 3436465518532387083}
   m_Layer: 0
   m_Name: Fruit
@@ -100,7 +101,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 1
   IsStatic: 0
+  OnPoped:
+    m_PersistentCalls:
+      m_Calls: []
   radius: 0.5
+--- !u!114 &39860306742704813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883420902178911483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bedf8da60de4cad4fa9397072ba4cec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 1263468098673139692}
+  physicBody: {fileID: 6990707839996023097}
+  extraRadiusForDetection: 0.1
+  minNeighboursToPop: 3
 --- !u!114 &3436465518532387083
 MonoBehaviour:
   m_ObjectHideFlags: 0

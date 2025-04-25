@@ -1,11 +1,12 @@
 using UnityEngine;
+
 public class PhysicBody : MonoBehaviour
 {
     [SerializeField] private float mass = 1f;
-    [SerializeField] bool IsStatic = false;
+    [SerializeField] private bool IsStatic = false;
 
-    private Vector3 velocity, movementOffset = Vector3.zero;
-    public float Mass => mass;
+    [SerializeField] private Vector3 velocity, movementOffset = Vector3.zero;
+    public float Mass { get => mass; set => mass = value; }
     public float InverseMass
     {
         get
@@ -19,9 +20,9 @@ public class PhysicBody : MonoBehaviour
 
     public Vector3 Velocity => velocity;
 
-    public void AddImpulse(Vector3 impulse)
+    public void AddVelocity(Vector3 impulse)
     {
-        if(!IsStatic)
+        if (!IsStatic)
             velocity += impulse;
     }
 
@@ -37,7 +38,13 @@ public class PhysicBody : MonoBehaviour
     }
     private void Move()
     {
+
         Vector3 totalMovement = velocity + movementOffset;
+
+        if (movementOffset.magnitude > velocity.magnitude)
+        {
+            velocity = movementOffset;
+        }
 
         if (totalMovement.magnitude > 0.01f)
         {

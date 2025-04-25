@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 372da2b69fb8f5345ac754345c0aeabe, type: 3}
   m_Name: PhysicsParameters
   m_EditorClassIdentifier: 
-  gravity: 0.5
+  gravity: 0.6
   correctionPercent: 0.8
-  allowedPenetration: 0.01
-  minDeltaVelocity: 0.03
-  restitution: 0.3
+  allowedPenetration: 0.03
+  minDeltaVelocity: 0.15
+  restitution: 0.2

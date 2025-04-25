@@ -1,7 +1,10 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PhysicCircle : PhysicBody
 {
+    [HideInInspector] public UnityEvent OnPoped = new();
+
     [SerializeField] private float radius = 1f;
 
     public float Radius { 
@@ -33,5 +36,10 @@ public class PhysicCircle : PhysicBody
         }
 
         transform.localScale = Vector3.one * 2f * radius * scaleWithoutLocal;
+    }
+
+    private void OnDestroy()
+    {
+        PhysicsController.RemoveBody(this);
     }
 }

@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
-public class RefillIndicator : MonoBehaviour
+public class ObjectAboveIndicator : MonoBehaviour
 {
-    [HideInInspector] public UnityEvent OnGamefieldEmpty = new(); 
+    [FormerlySerializedAs("OnGamefieldNotFull")] [HideInInspector] public UnityEvent OnNoObjectsAbove = new(); 
 
     float height;
 
@@ -16,7 +17,7 @@ public class RefillIndicator : MonoBehaviour
     {
         if(!PhysicsController.CheckBodiesAboveHorizontalLine(height))
         {
-            OnGamefieldEmpty.Invoke();
+            OnNoObjectsAbove.Invoke();
         }
     }
 }

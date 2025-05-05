@@ -16,9 +16,10 @@ MonoBehaviour:
   maxMass: 10
   minRadius: 0.5
   maxRadius: 1
-  colors:
-  - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 0.12909746, g: 0, b: 1, a: 1}
+  extraRadiusForDetection: 0.1
+  explosionForce: 0.15
+  extraRadiusForExplosion: 1
+  colors: []
   sprites:
   - {fileID: 21300000, guid: 1af2d49f0ffe6e84680c1cad0045f76e, type: 3}
   - {fileID: 21300000, guid: 461edb4f7f6baac45b5b80fadd4e9f5d, type: 3}

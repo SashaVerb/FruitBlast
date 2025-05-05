@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mass: 1
-  IsStatic: 0
+  isStatic: 0
   velocity: {x: 0, y: 0, z: 0}
   movementOffset: {x: 0, y: 0, z: 0}
   OnPoped:
@@ -121,8 +121,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 1263468098673139692}
   physicBody: {fileID: 6990707839996023097}
-  extraRadiusForDetection: 0.1
-  parameters: {fileID: 11400000, guid: 9364bd9ccba5e2f45be9f4dafab7db88, type: 2}
+  ballParameters: {fileID: 11400000, guid: 24703101555dacf4cb635361628a9a07, type: 2}
+  defaultBallParameters: {fileID: 11400000, guid: 9364bd9ccba5e2f45be9f4dafab7db88, type: 2}
 --- !u!114 &3436465518532387083
 MonoBehaviour:
   m_ObjectHideFlags: 0

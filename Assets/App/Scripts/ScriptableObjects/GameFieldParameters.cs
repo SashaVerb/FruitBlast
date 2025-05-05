@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GameFieldSize", menuName = "Scriptable Objects/Game Field Size Parameters")]
@@ -8,9 +9,9 @@ public class GameFieldParameters : ScriptableObject
     public float minBottomOffset;
     public float minRightOffset;
     public float minLeftOffset;
-    public float aspectValue { get; private set; }
+    private float aspectValue;
 
-    GameFieldParameters()
+    private void OnEnable()
     {
         aspectValue = (float)aspect.x / aspect.y;
     }

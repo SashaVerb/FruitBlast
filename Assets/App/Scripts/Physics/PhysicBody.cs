@@ -5,7 +5,7 @@ public class PhysicBody : MonoBehaviour
     [SerializeField] private float mass = 1f;
     [SerializeField] private bool isStatic = false;
 
-    [SerializeField] private Vector3 velocity, movementOffset = Vector3.zero;
+    private Vector3 velocity, movementOffset = Vector3.zero;
     public float Mass { get => mass; set => mass = value; }
     public float InverseMass
     {

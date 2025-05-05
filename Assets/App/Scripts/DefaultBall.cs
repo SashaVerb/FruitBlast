@@ -15,8 +15,8 @@ public class DefaultBall : Ball
         }
     }
 
-    [SerializeField] private DefaultBallParameters parameters;
-    public override void Pop()
+    [SerializeField] private DefaultBallParameters defaultBallParameters;
+    public override bool Pop()
     {
         HashSet<Ball> ballsToDestroy = new();
         Queue<Ball> toCheckNext = new();
@@ -40,13 +40,16 @@ public class DefaultBall : Ball
             }
         }
 
-        if (toDestroy.Count >= parameters.minNeighboursToPop)
+        if (toDestroy.Count >= defaultBallParameters.minNeighboursToPop)
         {
             foreach (var info in toDestroy)
             {
-                //info.ball.physicBody.IsStatic = true;
-                Destroy(info.ball.gameObject, info.step * parameters.explosionDelay);
+                info.ball.physicBody.IsStatic = true;
+                Destroy(info.ball.gameObject, info.step * defaultBallParameters.explosionDelay);
             }
+            return true;
         }
+        else 
+            return false;
     }
 }

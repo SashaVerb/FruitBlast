@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravity: 0.5
   correctionPercent: 0.7
-  allowedPenetration: 0.01
-  minDeltaVelocity: 0.09
+  allowedPenetration: 0.03
+  minDeltaVelocity: 0.1
   restitution: 0.2

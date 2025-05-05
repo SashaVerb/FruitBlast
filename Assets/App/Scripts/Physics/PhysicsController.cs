@@ -4,8 +4,8 @@ using UnityEngine;
 public class PhysicsController : MonoBehaviour
 {
     [SerializeField] private PhysicsParameters parameters;
-
-    private static List<PhysicCircle> bodies = new();
+    [SerializeField] private PhysicLine bottomLine;
+    private static List<PhysicCircle> bodies;
     private static List<PhysicLine> borders;
 
     private static List<CollisionInfo> collisionInfos = new();
@@ -13,10 +13,12 @@ public class PhysicsController : MonoBehaviour
     private void Awake()
     {
         InitBorders();
+        Events.OnGameOver.AddListener(RemoveBottomBorder);
     }
 
     private void InitBorders()
     {
+        bodies = new();
         borders = new(GetComponentsInChildren<PhysicLine>());
     }
 
@@ -223,6 +225,11 @@ public class PhysicsController : MonoBehaviour
         {
             body.AddVelocity((body.transform.position - position).normalized * velocity);
         }
+    }
+    
+    private void RemoveBottomBorder()
+    {
+        borders.Remove(bottomLine);
     }
 
     private class CollisionInfo

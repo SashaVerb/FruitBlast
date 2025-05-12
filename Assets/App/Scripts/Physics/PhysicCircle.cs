@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -38,7 +39,12 @@ public class PhysicCircle : PhysicBody
         transform.localScale = Vector3.one * 2f * radius * scaleWithoutLocal;
     }
 
-    private void OnDestroy()
+    private void OnEnable()
+    {
+        PhysicsController.AddBody(this);
+    }
+
+    private void OnDisable()
     {
         PhysicsController.RemoveBody(this);
     }

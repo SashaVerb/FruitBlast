@@ -40,19 +40,19 @@ public class PhysicBody : MonoBehaviour
     }
     private void Move()
     {
-
-        Vector3 totalMovement = velocity + movementOffset;
+        Vector3 totalMovement = velocity * Time.fixedDeltaTime + movementOffset;
 
         if (movementOffset.magnitude > velocity.magnitude)
         {
             velocity = movementOffset;
         }
 
-        if (totalMovement.magnitude > 0.01f)
+        if (totalMovement.magnitude > 0.0001f)
         {
             transform.position += totalMovement;
         }
 
         movementOffset = Vector3.zero;
     }
+    
 }

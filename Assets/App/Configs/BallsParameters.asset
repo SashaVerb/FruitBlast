@@ -17,11 +17,18 @@ MonoBehaviour:
   minRadius: 0.5
   maxRadius: 1
   extraRadiusForDetection: 0.1
-  explosionForce: 0.15
+  explosionForce: 2
   extraRadiusForExplosion: 1
-  colors: []
   sprites:
-  - {fileID: 21300000, guid: 1af2d49f0ffe6e84680c1cad0045f76e, type: 3}
-  - {fileID: 21300000, guid: 461edb4f7f6baac45b5b80fadd4e9f5d, type: 3}
-  - {fileID: 21300000, guid: 92cb4c66a26de9746b53cb3940154e2d, type: 3}
-  - {fileID: 21300000, guid: 41d2631fdad010644bb3b3f4044bb9a4, type: 3}
+  - fruitSprite: {fileID: 1603192917, guid: 2f84d79e64adfbb4782a91a60b511119, type: 3}
+    leftHalf: {fileID: -1720432458, guid: 2f84d79e64adfbb4782a91a60b511119, type: 3}
+    rightHalf: {fileID: -380389963, guid: 2f84d79e64adfbb4782a91a60b511119, type: 3}
+    color: {r: 0.18823531, g: 0.7019608, b: 0.06666667, a: 1}
+  - fruitSprite: {fileID: -1660388471, guid: 6b56a27f103971340a06fcd4057e94a0, type: 3}
+    leftHalf: {fileID: 369219098, guid: 6b56a27f103971340a06fcd4057e94a0, type: 3}
+    rightHalf: {fileID: 216327809, guid: 6b56a27f103971340a06fcd4057e94a0, type: 3}
+    color: {r: 0.9686275, g: 0.85098046, b: 0.12941177, a: 1}
+  - fruitSprite: {fileID: -1053638048, guid: e4521da07f28f034386bbf636e99af8e, type: 3}
+    leftHalf: {fileID: 805697223, guid: e4521da07f28f034386bbf636e99af8e, type: 3}
+    rightHalf: {fileID: 1140486095, guid: e4521da07f28f034386bbf636e99af8e, type: 3}
+    color: {r: 0.9568628, g: 1, b: 0.5058824, a: 1}

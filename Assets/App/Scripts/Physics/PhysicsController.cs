@@ -3,30 +3,24 @@ using UnityEngine;
 
 public class PhysicsController : MonoBehaviour
 {
-    [SerializeField] private PhysicsParameters parameters;
-    [SerializeField] private PhysicLine bottomLine;
+    [SerializeField] public PhysicsParameters parameters;
     private static List<PhysicCircle> bodies;
     private static List<PhysicLine> borders;
 
     private static List<CollisionInfo> collisionInfos = new();
-
+    private GravityDirectionProvider gravityDirectionProvider;
     private void Awake()
     {
-        InitBorders();
-        Events.OnGameOver.AddListener(RemoveBottomBorder);
-    }
-
-    private void InitBorders()
-    {
         bodies = new();
-        borders = new(GetComponentsInChildren<PhysicLine>());
+        borders = new();
+        gravityDirectionProvider = new();
     }
 
     private void FixedUpdate()
     {
         for (int i = 0; i < bodies.Count; i++)
         {
-            bodies[i].AddVelocity(Vector2.down * parameters.gravity * Time.fixedDeltaTime);
+            bodies[i].AddVelocity(gravityDirectionProvider.GetGravityDirection() * parameters.gravity * Time.fixedDeltaTime);
 
             DetectBoundaryCollisions(bodies[i]);
 
@@ -133,23 +127,6 @@ public class PhysicsController : MonoBehaviour
         }
     }
 
-    public void AddPhysicBody(PhysicCircle newBody)
-    {
-        bodies.Add(newBody);
-    }
-
-    public void ToggleBorder()
-    {
-        if (borders.Count == 0)
-        {
-            InitBorders();
-        }
-        else
-        {
-            borders.Clear();
-        }
-    }
-
     public void DestroyAllBodies()
     {
         foreach(var body in bodies)
@@ -159,9 +136,25 @@ public class PhysicsController : MonoBehaviour
         bodies.Clear();
     }
 
+    public static void AddBody(PhysicCircle newBody)
+    {
+        bodies.Add(newBody);
+    }
+    
     public static void RemoveBody(PhysicCircle body)
     {
         bodies.Remove(body);
+    }
+    
+    public static void AddBorder(PhysicLine newBorder)
+    {
+        if(!borders.Contains(newBorder))
+            borders.Add(newBorder);
+    }
+    
+    public static void RemoveBorder(PhysicLine border)
+    {
+        borders.Remove(border);
     }
 
     public static PhysicCircle GetBodyAt(Vector2 position)
@@ -225,11 +218,6 @@ public class PhysicsController : MonoBehaviour
         {
             body.AddVelocity((body.transform.position - position).normalized * velocity);
         }
-    }
-    
-    private void RemoveBottomBorder()
-    {
-        borders.Remove(bottomLine);
     }
 
     private class CollisionInfo

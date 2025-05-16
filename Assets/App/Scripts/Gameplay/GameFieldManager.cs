@@ -36,7 +36,7 @@ public class GameFieldManager : MonoBehaviour
         if(!CanAddBalls)
             return null;
         
-        var newBall = ballFactory.Create();
+        var newBall = ballFactory.CreateDefaultBall();
         float randomX = Random.Range(gameField.position.x - gameField.localScale.x * 0.5f,
                 gameField.position.x + gameField.localScale.x * 0.5f),
             randomY = Random.Range(gameField.position.y + gameField.localScale.y * 0.5f, gameField.position.y + gameField.localScale.y * 0.5f + 3f);

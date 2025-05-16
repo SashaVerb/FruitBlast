@@ -1,31 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class Ball : MonoBehaviour
+public abstract class Ball : MonoBehaviour
 {
-    public SpriteRenderer fruitSpriteRenderer;
+    public SpriteRenderer insidePartSpriteRenderer;
     public PhysicCircle physicBody;
-    public GameObject bubble;
-    [Space]
-    [SerializeField] protected BallsParameters ballParameters;
+    public BubblePopEffect bubble;
 
-    public int Id { get; set; }
+    [HideInInspector] 
+    public readonly UnityEvent onDestroy = new();
+    
+    public bool IsDestroyed { get; set; } = false;
 
-    public virtual bool TryPop() 
+    public abstract bool TryPop(out List<Ball> ballsToDestroy);
+
+    public List<Ball> GetBallsAround(float extraRadius = 0f)
     {
-        Debug.Log("Default pop reaction");
-        return true;
-    }
+        var neighbours = PhysicsController.GetBodiesInArea(transform.position, physicBody.Radius + extraRadius);
 
-    public List<Ball> GetNeighbours()
-    {
-        var neighbours = PhysicsController.GetBodiesInArea(transform.position, physicBody.Radius + ballParameters.extraRadiusForDetection);
-
-        List<Ball> result = new List<Ball>(neighbours.Count);
+        List<Ball> result = new(neighbours.Count);
         foreach (var neighbour in neighbours)
         {
-            result.Add(neighbour.GetComponent<Ball>());
+            var ball = neighbour.GetComponent<Ball>();
+            if (ball != null)
+                result.Add(ball);
+        }
+
+        return result;
+    }
+    
+    public List<Ball> GetBallsInBox(float width, float height)
+    {
+        var neighbours = PhysicsController.GetBodiesInBox(transform.position, width, height);
+
+        List<Ball> result = new(neighbours.Count);
+        foreach (var neighbour in neighbours)
+        {
+            var ball = neighbour.GetComponent<Ball>();
+            if (ball != null)
+                result.Add(ball);
         }
 
         return result;
@@ -33,6 +48,7 @@ public class Ball : MonoBehaviour
     
     public void Destroy(float delay = 0f)
     {
+        onDestroy.Invoke();
         StartCoroutine(DestroyRoutine(delay));
     }
 

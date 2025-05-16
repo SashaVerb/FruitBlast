@@ -4,6 +4,13 @@ using UnityEngine;
 public class DefaultBallParameters : ScriptableObject
 {
     public int minNeighboursToPop;
-    public float explosionDelay;
+    public float explosionChainDelay, extraRadiusForDetection, explosionForce, explosionExtraRadius;
 
+    public BallVisuals[] sprites;
+
+    [System.Serializable]
+    public class BallVisuals
+    {
+        public Sprite fruitSprite;
+    }
 }

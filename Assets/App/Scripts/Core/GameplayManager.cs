@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +9,7 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameFieldManager gameField;
     [SerializeField] private TurnsController turnsController;
     [SerializeField] private StartCountController startCountController;
+    [SerializeField] private BallDestroyController ballDestroyController;
 
     private bool canPopBalls;
     
@@ -58,10 +60,11 @@ public class GameplayManager : MonoBehaviour
     private void PopBall()
     {
         var body = PhysicsController.GetBodyAt(camera.ScreenToWorldPoint(Input.mousePosition));
-        if (body != null)
+        if (body != null && body.TryGetComponent<DefaultBall>(out DefaultBall defaultBall))
         {
-            if (body.GetComponent<Ball>().TryPop())
+            if (defaultBall.TryPop(out List<Ball> ballsToDestroy))
             {
+                ballDestroyController.DestroyBalls(ballsToDestroy);
                 turnsController.MinusOneTurn();
             }
         }

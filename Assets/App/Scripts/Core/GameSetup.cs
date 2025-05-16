@@ -10,7 +10,7 @@ public class GameSetup : MonoBehaviour
     private void SetupRandom()
     {
         int seed = Random.Range(1000, 9999);
-        Random.InitState(6131);
+        Random.InitState(seed);
         Debug.Log("Seed: " + seed);
     }
 }

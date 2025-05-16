@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PhysicsParameters
   m_EditorClassIdentifier: 
   gravity: 10
-  correctionPercent: 0.7
+  correctionPercent: 0.5
   allowedPenetration: 0.03
   minDeltaVelocity: 1
   restitution: 0.2

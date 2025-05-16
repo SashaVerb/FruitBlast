@@ -1,9 +1,8 @@
-using System;
 using UnityEngine;
 
 public class TurnsController : MonoBehaviour
 {
-    [SerializeField] private TurnsView turnsView;
+    [SerializeField] private ViewWithScaleEffect turnsView;
     [SerializeField] private int maxTurns;
 
     private int turnsLeft;
@@ -14,7 +13,7 @@ public class TurnsController : MonoBehaviour
         set
         {
             turnsLeft = value;
-            turnsView.SetTurns(turnsLeft);
+            turnsView.SetText(turnsLeft.ToString());
         }
     }
 
@@ -25,11 +24,12 @@ public class TurnsController : MonoBehaviour
 
     public void MinusOneTurn()
     {
-        if (TurnsLeft <= 0)
+        var dieHard = PerkSystem.GetPerk<DieHard>();
+        if(dieHard != null && dieHard.Triggered())
             return;
         
         --TurnsLeft;
-        if (TurnsLeft <= 0)
+        if (TurnsLeft == 0)
         {
             Events.OnGameOver.Invoke();
         }

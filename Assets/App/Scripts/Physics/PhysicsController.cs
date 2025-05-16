@@ -187,6 +187,34 @@ public class PhysicsController : MonoBehaviour
 
         return result;
     }
+    
+    public static List<PhysicCircle> GetBodiesInBox(Vector2 position, float width, float height)
+    {
+        List<PhysicCircle> result = new();
+        float rMinX = position.x - width * 0.5f,
+            rMinY = position.y - height * 0.5f,
+            rMaxX = position.x + width * 0.5f,
+            rMaxY = position.y + height * 0.5f;
+        
+        foreach (var body in bodies)
+        {
+            Vector2 circleCenter = body.transform.position;
+            float circleRadius = body.Radius;
+            
+            float closestX = Mathf.Clamp(circleCenter.x, rMinX, rMaxX),
+                closestY = Mathf.Clamp(circleCenter.y, rMinY, rMaxY);
+            
+            float distanceX = circleCenter.x - closestX, distanceY = circleCenter.y - closestY;
+            float distanceSquared = distanceX * distanceX + distanceY * distanceY;
+            
+            if (distanceSquared < circleRadius * circleRadius)
+            {
+                result.Add(body);
+            }
+        }
+
+        return result;
+    }
 
     public static bool CheckBodiesOnHorizontalLine(float height)
     {

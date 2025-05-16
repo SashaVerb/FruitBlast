@@ -3,23 +3,38 @@ using Random = UnityEngine.Random;
 
 public class BallFactory : MonoBehaviour
 {
-    [SerializeField] private BallsParameters ballsParameters;
-    [SerializeField] private DefaultBall ballPrefab;
+    [SerializeField] private BallPhysicParameters ballsPhysic;
+    [SerializeField] private DefaultBall defaultBallPrefab;
+    [SerializeField] private Bomb bombPrefab;
+    [SerializeField] private HorizontalBomb horizontalBombPrefab;
+    [SerializeField] private BallTypes ballTypes;
     [SerializeField] private CircleScaler circleScaler;
+    [SerializeField] private GameObject[] subscribers;
 
-    public Ball Create()
+    public Ball CreateDefaultBall()
     {
-        var newBall = Instantiate(ballPrefab, transform);
-        
-        newBall.physicBody.Radius = Random.Range(ballsParameters.minRadius, ballsParameters.maxRadius);
-        newBall.physicBody.Mass = Random.Range(ballsParameters.minMass, ballsParameters.maxMass);
-        int id = Random.Range(0, ballsParameters.sprites.Length);
+        Ball newBall = Instantiate(defaultBallPrefab, transform);
+            
+        return ConfigureBall(newBall);
+    }
+    
+    public Ball CreateBomb(float radius)
+    {
+        Bomb newBall = Instantiate(bombPrefab, transform);
+        newBall.Radius = radius;
+        return ConfigureBall(newBall);
+    }
 
-        var ballVisuals = ballsParameters.sprites[id];
-        newBall.fruitSpriteRenderer.sprite = ballVisuals.fruitSprite;
-        newBall.leftHalf.sprite = ballVisuals.leftHalf;
-        newBall.rightHalf.sprite = ballVisuals.rightHalf;
-        newBall.Id = id;
+    public Ball CreateHorizontalBall(float length)
+    {
+        HorizontalBomb newBall = Instantiate(horizontalBombPrefab, transform);
+        return ConfigureBall(newBall);
+    }
+    
+    private Ball ConfigureBall(Ball newBall)
+    {
+        newBall.physicBody.Radius = Random.Range(ballsPhysic.minRadius, ballsPhysic.maxRadius);
+        newBall.physicBody.Mass = Random.Range(ballsPhysic.minMass, ballsPhysic.maxMass);
 
         circleScaler.RescaleCircle(newBall.physicBody);
         

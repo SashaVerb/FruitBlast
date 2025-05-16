@@ -1,73 +1,85 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class DefaultBall : Ball
 {
-    public SpriteRenderer leftHalf, rightHalf;
-    [SerializeField] private DefaultBallParameters defaultBallParameters;
+    [SerializeField] private DefaultBallParameters parameters;
     [SerializeField] private DefaultBallPopEffect popEffect;
-    public override bool TryPop()
-    {
-        HashSet<Ball> ballsToDestroy = new();
-        Queue<Ball> toCheckNext = new();
-        List<BallDestroyInfo> toDestroy = new();
+    
+    public int Id { get; set; }
 
-        ballsToDestroy.Add(this);
+    private void Awake()
+    {
+        RandomizeParameters();
+    }
+
+    private void RandomizeParameters()
+    {
+        Id = Random.Range(0, parameters.sprites.Length);
+        
+        var ballVisuals = parameters.sprites[Id];
+        insidePartSpriteRenderer.sprite = ballVisuals.fruitSprite;
+    }
+    
+    public override bool TryPop(out List<Ball> ballsToDestroy)
+    {
+        HashSet<Ball> markedToDestroy = new();
+        Queue<Ball> toCheckNext = new();
+        ballsToDestroy = new();
+
+        markedToDestroy.Add(this);
         toCheckNext.Enqueue(this);
-        toDestroy.Add(new BallDestroyInfo(this, 0));
+        ballsToDestroy.Add(this);
 
         while(toCheckNext.TryDequeue(out Ball ball))
         {
-            BallDestroyInfo father = toDestroy.Find(info => info.ball == ball);
-            foreach (var neighbour in ball.GetNeighbours())
+            foreach (var neighbour in ball.GetBallsAround())
             {
-                if (neighbour.Id == Id && !ballsToDestroy.Contains(neighbour))
+                if (neighbour is DefaultBall defaultBall)
+                {
+                    if (defaultBall.Id == Id && !markedToDestroy.Contains(neighbour))
+                    {
+                        markedToDestroy.Add(neighbour);
+                        toCheckNext.Enqueue(neighbour);
+                        ballsToDestroy.Add(neighbour);
+                    }
+                }
+                else
                 {
                     ballsToDestroy.Add(neighbour);
-                    toCheckNext.Enqueue(neighbour);
-                    toDestroy.Add(new BallDestroyInfo(neighbour, father.step + 1));
                 }
             }
         }
 
-        if (toDestroy.Count >= defaultBallParameters.minNeighboursToPop)
+        if (ballsToDestroy.Count >= parameters.minNeighboursToPop)
         {
-            foreach (var info in toDestroy)
-            {
-                info.ball.physicBody.IsStatic = true;
-                info.ball.Destroy(info.step * defaultBallParameters.explosionDelay);
-            }
             return true;
         }
-        else 
+        else
+        {
+            ballsToDestroy = null;
             return false;
+        }
     }
     
     protected override IEnumerator DestroyRoutine(float delay = 0f)
     {
+        PhysicsController.RemoveBody(physicBody);
+        PhysicsController.MakeExplosion(transform.position, physicBody.Radius + parameters.explosionExtraRadius, parameters.explosionForce);
+        
         yield return new WaitForSeconds(delay);
         Events.OnBallDestroyed.Invoke();
         
-        bubble.SetActive(false);
-        PhysicsController.RemoveBody(physicBody);
-        PhysicsController.MakeExplosion(transform.position, physicBody.Radius + ballParameters.extraRadiusForExplosion, ballParameters.explosionForce);
-        fruitSpriteRenderer.enabled = false;
+        insidePartSpriteRenderer.enabled = false;
         
-        yield return popEffect.ExplosionEffect();
+        Coroutine bubbleEffect = StartCoroutine(bubble.PlayEffect());
+        Coroutine explosionEffect = StartCoroutine(popEffect.ExplosionEffect(insidePartSpriteRenderer.sprite));
+        
+        yield return bubbleEffect;
+        yield return explosionEffect;
         
         yield return base.DestroyRoutine();
-    }
-    
-    private struct BallDestroyInfo
-    {
-        public Ball ball { get; set; }
-        public int step { get; set; }
-
-        public BallDestroyInfo(Ball ball, int step)
-        {
-            this.ball = ball;
-            this.step = step;
-        }
     }
 }

@@ -13,4 +13,20 @@ MonoBehaviour:
   m_Name: DefaultBallParameters
   m_EditorClassIdentifier: 
   minNeighboursToPop: 3
-  explosionDelay: 0.1
+  explosionChainDelay: 0.1
+  extraRadiusForDetection: 0.1
+  explosionForce: 1
+  explosionExtraRadius: 1
+  sprites:
+  - fruitSprite: {fileID: 1603192917, guid: 2f84d79e64adfbb4782a91a60b511119, type: 3}
+    leftHalf: {fileID: -1720432458, guid: 2f84d79e64adfbb4782a91a60b511119, type: 3}
+    rightHalf: {fileID: -380389963, guid: 2f84d79e64adfbb4782a91a60b511119, type: 3}
+    color: {r: 0, g: 0, b: 0, a: 0}
+  - fruitSprite: {fileID: -1660388471, guid: 6b56a27f103971340a06fcd4057e94a0, type: 3}
+    leftHalf: {fileID: 369219098, guid: 6b56a27f103971340a06fcd4057e94a0, type: 3}
+    rightHalf: {fileID: 216327809, guid: 6b56a27f103971340a06fcd4057e94a0, type: 3}
+    color: {r: 0, g: 0, b: 0, a: 0}
+  - fruitSprite: {fileID: -1053638048, guid: e4521da07f28f034386bbf636e99af8e, type: 3}
+    leftHalf: {fileID: 805697223, guid: e4521da07f28f034386bbf636e99af8e, type: 3}
+    rightHalf: {fileID: 1140486095, guid: e4521da07f28f034386bbf636e99af8e, type: 3}
+    color: {r: 0, g: 0, b: 0, a: 0}

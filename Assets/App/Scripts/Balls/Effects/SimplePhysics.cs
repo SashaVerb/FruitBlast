@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-public class GravityEffect : MonoBehaviour
+public class SimplePhysics : MonoBehaviour
 {
     private Vector2 velocity;
 
@@ -13,13 +12,15 @@ public class GravityEffect : MonoBehaviour
 
     public float Gravity { get; set; } = 1f;
 
+    public float RotationSpeed { get; set; }
     private void FixedUpdate()
     {
-        velocity.y -= Gravity * Time.fixedDeltaTime;;
+        velocity.y -= Gravity * Time.fixedDeltaTime;
     }
 
     private void Update()
     {
         transform.Translate(velocity * Time.deltaTime, Space.World);
+        transform.Rotate(Vector3.forward, velocity.x * RotationSpeed * Time.fixedDeltaTime);
     }
 }

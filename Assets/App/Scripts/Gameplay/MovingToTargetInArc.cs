@@ -26,8 +26,12 @@ public class MovingToTargetInArc : MonoBehaviour
         for (int i = 0; i <= pointsCount; i++)
         {
             Vector3 wayPoint = Vector3.Lerp(transform.position, target, (i + 1f) / (pointsCount + 1));
-            wayPoint += perpendicular * (sign * sideAmplitude);
-            sign *= -1f;
+            if(i != pointsCount)
+            {
+                wayPoint += perpendicular * (sign * sideAmplitude);
+                sign *= -1f;
+            }
+            
             int index = i * 3;
             points[index] = wayPoint;
             points[index + 1] = lastWayPoint + direction;
@@ -35,9 +39,10 @@ public class MovingToTargetInArc : MonoBehaviour
             
             lastWayPoint = wayPoint;
         }
-
-        transform.DOPath(points.ToArray(), Random.Range(minDuration, maxDuration), PathType.CubicBezier, PathMode.Sidescroller2D)
+        
+        transform.DOPath(points, Random.Range(minDuration, maxDuration), PathType.CubicBezier, PathMode.Sidescroller2D)
             .SetEase(ease)
+            .SetLink(gameObject)
             .OnComplete(onRichTarget.Invoke);
     }
 

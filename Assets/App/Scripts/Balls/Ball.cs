@@ -12,7 +12,7 @@ public abstract class Ball : MonoBehaviour
     [HideInInspector] 
     public readonly UnityEvent onDestroy = new();
     
-    public bool IsDestroyed { get; set; } = false;
+    public bool IsDestroyed { get; private set; } = false;
 
     public abstract bool TryPop(out List<Ball> ballsToDestroy);
 
@@ -48,14 +48,20 @@ public abstract class Ball : MonoBehaviour
     
     public void Destroy(float delay = 0f)
     {
-        onDestroy.Invoke();
+        IsDestroyed = true;
         StartCoroutine(DestroyRoutine(delay));
     }
 
-    protected virtual IEnumerator DestroyRoutine(float delay = 0f)
+    private IEnumerator DestroyRoutine(float delay)
     {
+        PhysicsController.RemoveBody(physicBody);
         yield return new WaitForSeconds(delay);
-        
+        onDestroy.Invoke();
+        yield return DestroyEffect();
         Destroy(gameObject);
+    }
+    protected virtual IEnumerator DestroyEffect()
+    {
+        yield return null;
     }
 }

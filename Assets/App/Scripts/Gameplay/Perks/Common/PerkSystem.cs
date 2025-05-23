@@ -48,15 +48,11 @@ public class PerkSystem : MonoBehaviour
 
     public (Perk, Perk) GetTwoPerks()
     {
-        var keys = perkRegistry.Keys.ToArray();
-        int index1 = Random.Range(0, keys.Length);
-        int index2;
-        
-        do
-        {
-            index2 = Random.Range(0, keys.Length);
-        } while (index2 == index1);
+        var keys = perkRegistry.Keys.ToList();
+        var firstPerk = keys[Random.Range(0, keys.Count)];
+        keys.Remove(firstPerk);
+        var secondPerk = keys[Random.Range(0, keys.Count)];
 
-        return (perkRegistry[keys[index1]], perkRegistry[keys[index2]]);
+        return (perkRegistry[firstPerk], perkRegistry[secondPerk]);
     }
 }

@@ -7,7 +7,8 @@ public class HoveringEffect : MonoBehaviour
     [SerializeField] private float period;
     
     private Tween hoveringTween;
-
+    private Vector3 startPosition;
+    
     public void PlayEffect()
     {
         hoveringTween = transform

@@ -27,7 +27,12 @@ public class Perk : MonoBehaviour
         OnUpgrade();
     }
 
-    public virtual bool Triggered()
+    public bool Triggered()
+    {
+        return isActive && TryTrigger();
+    }
+
+    protected virtual bool TryTrigger()
     {
         return true;
     }

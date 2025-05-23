@@ -29,7 +29,7 @@ public class LuckyGuy : Perk
         parameters.Cooldown = startCooldown - decreaseCooldown * (level - 1);
     }
 
-    public override bool Triggered()
+    protected override bool TryTrigger()
     {
         if ((lastTriggerTime + parameters.Cooldown) <= Time.time && Random.value < parameters.Chance)
         {

@@ -18,7 +18,11 @@ public class PerkSlotView : MonoBehaviour
     
     private void Awake()
     {
-        applyButton.onClick.AddListener(() => perkSystem.UpgradePerk(perkType));
+        applyButton.onClick.AddListener(() =>
+        {
+            perkSystem.UpgradePerk(perkType);
+            OnClick.Invoke();
+        });
     }
     
     public void Init(Perk perk)

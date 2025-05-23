@@ -57,6 +57,11 @@ public class ProgressView : MonoBehaviour
 
     public IEnumerator SetValue(float value)
     {
+        if (sliderSequence != null && sliderSequence.IsActive())
+        {
+            sliderSequence.Kill();
+        }
+        
         tween = slider.DOValue(value, changeTime);
         yield return tween.WaitForCompletion();
     }
@@ -76,7 +81,7 @@ public class ProgressView : MonoBehaviour
         slider.value = value;
     }
 
-    private void OnDestroy()
+    private void OnEnable()
     {
         sliderSequence?.Kill();
         tween?.Kill();

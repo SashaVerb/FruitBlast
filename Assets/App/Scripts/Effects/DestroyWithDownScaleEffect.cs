@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -45,21 +44,20 @@ public class DestroyWithDownScaleEffect : MonoBehaviour
             Coroutine coroutine = StartCoroutine(effect.StopEffect());
             effectCoroutines.Add(coroutine);
         }
-        
-        foreach (var coroutine in effectCoroutines)
-        {
-            yield return coroutine;
-        }
-        
+
         var scaleTween = model
             .DOScale(0, scaleDuration)
-            .SetEase(Ease.InBack)
-            .SetLink(gameObject);
+            .SetEase(Ease.InBack);
         
         if(useParticleSystem)
             particle.Play();
         
         yield return scaleTween.WaitForCompletion();
+        
+        foreach (var coroutine in effectCoroutines)
+        {
+            yield return coroutine;
+        }
         
         if(useParticleSystem)
             yield return new WaitWhile(() => particle.isPlaying);

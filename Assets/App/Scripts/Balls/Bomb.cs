@@ -5,22 +5,21 @@ using UnityEngine;
 public class Bomb : Ball
 {
     [SerializeField] private BombParameters parameters;
+    [SerializeField] protected ParticleSystem destroyParticle;
     
-    public float Radius { get; set; }
     public override bool TryPop(out List<Ball> ballsToDestroy)
     {   
         ballsToDestroy = new () {this};
-        ballsToDestroy.AddRange(GetBallsAround(Radius));
         return true;
     }
 
-    protected override IEnumerator DestroyRoutine(float delay = 0)
+    protected override IEnumerator DestroyEffect()
     {
-        PhysicsController.RemoveBody(physicBody);
         PhysicsController.MakeExplosion(transform.position, physicBody.Radius + parameters.explosionExtraRadius, parameters.explosionForce);
         
-        yield return new WaitForSeconds(delay);
+        destroyParticle.Play();
+        yield return bubble.PlayEffect();
         
-        yield return base.DestroyRoutine();
+        yield return new WaitWhile(() => destroyParticle.isPlaying);;
     }
 }

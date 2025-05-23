@@ -5,29 +5,17 @@ public class BallFactory : MonoBehaviour
 {
     [SerializeField] private BallPhysicParameters ballsPhysic;
     [SerializeField] private DefaultBall defaultBallPrefab;
-    [SerializeField] private Bomb bombPrefab;
-    [SerializeField] private HorizontalBomb horizontalBombPrefab;
-    [SerializeField] private BallTypes ballTypes;
     [SerializeField] private CircleScaler circleScaler;
-    [SerializeField] private GameObject[] subscribers;
 
     public Ball CreateDefaultBall()
     {
-        Ball newBall = Instantiate(defaultBallPrefab, transform);
-            
-        return ConfigureBall(newBall);
-    }
-    
-    public Ball CreateBomb(float radius)
-    {
-        Bomb newBall = Instantiate(bombPrefab, transform);
-        newBall.Radius = radius;
-        return ConfigureBall(newBall);
+        return AddBallToField(defaultBallPrefab);
     }
 
-    public Ball CreateHorizontalBall(float length)
+    public Ball AddBallToField(Ball ball)
     {
-        HorizontalBomb newBall = Instantiate(horizontalBombPrefab, transform);
+        Ball newBall = Instantiate(ball, transform);
+        
         return ConfigureBall(newBall);
     }
     

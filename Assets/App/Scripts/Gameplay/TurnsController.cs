@@ -24,6 +24,10 @@ public class TurnsController : MonoBehaviour
 
     public void MinusOneTurn()
     {
+        var quickFinger = PerkSystem.GetPerk<QuickFinger>();
+        if(quickFinger != null && quickFinger.IsActive)
+            return;
+        
         var dieHard = PerkSystem.GetPerk<DieHard>();
         if(dieHard != null && dieHard.Triggered())
             return;

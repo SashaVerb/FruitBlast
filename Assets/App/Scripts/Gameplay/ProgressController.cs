@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ProgressController : MonoBehaviour
@@ -8,26 +7,42 @@ public class ProgressController : MonoBehaviour
     [SerializeField] private PerksView perksView;
     [SerializeField] private ProgressView view;
     [SerializeField] private ViewWithScaleEffect levelLabel;
-    
-    private int currentProgress = 0, maxProgress = 10, level = 0;
+    [SerializeField] private int maxProgress;
+    private int currentProgress = 0, level = 0;
     
     public float Progress => (float)currentProgress / maxProgress;
     public int Level => level;
+    private bool ignore = false;
     
-    private Coroutine levelUpCoroutine, slidingCoroutine;
+    private Coroutine slidingCoroutine, levelUpCoroutine;
+    
+    private void Awake()
+    {
+        Events.OnGameOver.AddListener(Freeze);
+    }
+
+    private void Freeze()
+    {
+        ignore = true;
+        view.enabled = false;
+    }
+
     public void AddProgress(int progress)
     {
+        if (ignore) return;
+        
         currentProgress += progress;
+        
+        if (slidingCoroutine != null)
+            StopCoroutine(slidingCoroutine);
+        
         if (currentProgress >= maxProgress)
         {
-            if (levelUpCoroutine != null)
-                StopCoroutine(levelUpCoroutine);
-            levelUpCoroutine = StartCoroutine(LevelUpRoutine());
+            if(levelUpCoroutine == null)
+                levelUpCoroutine = StartCoroutine(LevelUpRoutine());
         }
         else
         {
-            if (slidingCoroutine != null)
-                StopCoroutine(slidingCoroutine);
             slidingCoroutine = StartCoroutine(view.SetValue(Progress));
         }
     }
@@ -37,12 +52,15 @@ public class ProgressController : MonoBehaviour
         while (currentProgress >= maxProgress)
         {
             yield return view.LevelUp();
-            // perksView.ShowView(level);
-            // yield return new WaitWhile(() => perksView.IsShowing);
             currentProgress -= maxProgress;
             AddLevel();
+            GameplayManager.CanPopBalls = false;
+            perksView.ShowView(level);
+            yield return new WaitWhile(() => perksView.IsShowing);
+            GameplayManager.CanPopBalls = true;
         }
         
+        levelUpCoroutine = null;
         yield return view.SetValue(Progress);
     }
 

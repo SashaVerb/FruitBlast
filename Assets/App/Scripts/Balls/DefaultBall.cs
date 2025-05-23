@@ -28,7 +28,8 @@ public class DefaultBall : Ball
         HashSet<Ball> markedToDestroy = new();
         Queue<Ball> toCheckNext = new();
         ballsToDestroy = new();
-
+        List<Ball> otherBalls = new();
+        
         markedToDestroy.Add(this);
         toCheckNext.Enqueue(this);
         ballsToDestroy.Add(this);
@@ -48,13 +49,14 @@ public class DefaultBall : Ball
                 }
                 else
                 {
-                    ballsToDestroy.Add(neighbour);
+                    otherBalls.Add(neighbour);
                 }
             }
         }
 
         if (ballsToDestroy.Count >= parameters.minNeighboursToPop)
         {
+            ballsToDestroy.AddRange(otherBalls);
             return true;
         }
         else
@@ -64,14 +66,11 @@ public class DefaultBall : Ball
         }
     }
     
-    protected override IEnumerator DestroyRoutine(float delay = 0f)
+    protected override IEnumerator DestroyEffect()
     {
-        PhysicsController.RemoveBody(physicBody);
-        PhysicsController.MakeExplosion(transform.position, physicBody.Radius + parameters.explosionExtraRadius, parameters.explosionForce);
-        
-        yield return new WaitForSeconds(delay);
         Events.OnBallDestroyed.Invoke();
         
+        PhysicsController.MakeExplosion(transform.position, physicBody.Radius + parameters.explosionExtraRadius, parameters.explosionForce);
         insidePartSpriteRenderer.enabled = false;
         
         Coroutine bubbleEffect = StartCoroutine(bubble.PlayEffect());
@@ -79,7 +78,5 @@ public class DefaultBall : Ball
         
         yield return bubbleEffect;
         yield return explosionEffect;
-        
-        yield return base.DestroyRoutine();
     }
 }

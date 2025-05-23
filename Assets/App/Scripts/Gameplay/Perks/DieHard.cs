@@ -21,7 +21,7 @@ public class DieHard : Perk
         parameters.Chance = startChance + increaseChance * (level - 1);
     }
 
-    public override bool Triggered()
+    protected override bool TryTrigger()
     {
         if (Random.value < parameters.Chance)
         {

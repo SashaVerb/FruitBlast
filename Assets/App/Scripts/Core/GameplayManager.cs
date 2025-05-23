@@ -11,12 +11,7 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private StartCountController startCountController;
     [SerializeField] private BallDestroyController ballDestroyController;
 
-    private bool canPopBalls;
-    
-    private void Awake()
-    {
-        Events.OnGameOver.AddListener(OnGameOver);
-    }
+    public static bool CanPopBalls { get; set; }
     
     private void Start()
     {
@@ -25,33 +20,17 @@ public class GameplayManager : MonoBehaviour
 
     private IEnumerator OnStartRoutine()
     {
-        canPopBalls = false;
+        CanPopBalls = false;
         gameField.Fill();
         
         yield return startCountController.StartCount(gameField.GetFallTime());
 
-        canPopBalls = true;
-    }
-    
-    private void OnGameOver()
-    {
-        StartCoroutine(OnGameOverRoutine());
-    }
-    
-    private IEnumerator OnGameOverRoutine()
-    {
-        canPopBalls = false;
-        gameField.CanAddBalls = false;
-        gameField.BottomBorderActive = false;
-        
-        yield return gameField.WaitForBecomeEmpty();
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        CanPopBalls = true;
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && turnsController.CanMakeTurn() && canPopBalls)
+        if (Input.GetMouseButtonDown(0) && turnsController.CanMakeTurn() && CanPopBalls)
         {
             PopBall();
         }

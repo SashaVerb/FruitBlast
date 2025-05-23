@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CircleScaler : MonoBehaviour
@@ -10,6 +9,11 @@ public class CircleScaler : MonoBehaviour
     public void RescaleCircle(PhysicCircle circle)
     {
         circle.Radius *= transform.localScale.x / scale;
+    }
+
+    public void AdjustObjectScale(Transform objectTransform)
+    {
+        objectTransform.localScale *= transform.localScale.x / scale;
     }
     
     public void RescaleAllCircles(float newScale)

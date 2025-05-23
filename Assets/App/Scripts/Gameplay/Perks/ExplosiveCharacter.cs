@@ -1,35 +1,35 @@
 using UnityEngine;
 
-public class ExplosiveCharacter : Perk, IBallDestroyModifactor
+public class ExplosiveCharacter : AddingBallOnDestroyPerk
 {
-    [SerializeField] protected BallFactory ballFactory;
-    [SerializeField] protected int minBallsToTrigger;
-    [SerializeField] protected float startChance;
-    [SerializeField] protected float increaseChance;
     [SerializeField] protected float startRadius;
     [SerializeField] protected float increaseRadius;
     
     protected Parameters parameters;
-
-    public int MinBallsToTrigger => minBallsToTrigger;
     
     private void Awake()
     {
+        base.Awake();
         Init<ExplosiveCharacter>(this);
-        parameters = new Parameters(startChance, startRadius);
+        parameters = new Parameters(Chance, startRadius);
     }
 
     protected override void OnUpgrade()
     {
-        parameters.Chance = startChance + increaseChance * (level - 1);
+        base.OnUpgrade();
         parameters.Radius = startRadius + increaseRadius * (level - 1);
     }
 
-    public override bool Triggered()
+    protected override Ball ConfigureBall(Ball ball)
     {
-        return Random.value <= parameters.Chance;
+        if (ball is CircleBomb circleBomb)
+        {
+            circleBomb.Rad = parameters.Radius;
+        }
+
+        return ball;
     }
-    
+
     public Parameters GetParameters()
     {
         return parameters;
@@ -45,17 +45,5 @@ public class ExplosiveCharacter : Perk, IBallDestroyModifactor
             this.Chance = chance;
             this.Radius = radius;
         }
-    }
-
-    public void Modificate(Ball ball)
-    {
-        ball.onDestroy.AddListener(() =>
-        {
-            if (Triggered())
-            {
-                var bomb = ballFactory.CreateBomb(parameters.Radius);
-                bomb.transform.position = ball.transform.position;
-            }
-        });
     }
 }
